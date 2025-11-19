@@ -1,0 +1,19 @@
+[
+  {
+    "name": "India",
+    "dial_code": "+91",
+    "code": "IN"
+  },
+
+  {
+    "name": "United States",
+    "dial_code": "+1",
+    "code": "US"
+  }
+  ,
+  {
+    "name": "Pakistan",
+    "dial_code": "+92",
+    "code": "PK"
+  }
+]

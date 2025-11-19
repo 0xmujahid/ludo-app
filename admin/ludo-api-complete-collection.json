@@ -1,0 +1,3040 @@
+{
+  "info": {
+    "name": "Ludo Game API - Complete Collection v3.0",
+    "description": "Comprehensive API collection for the Ludo multiplayer game platform including all endpoints with enhanced parameters, optional fields, and comprehensive testing. This collection includes complete payloads for all endpoints with optional fields clearly identified. Key features: Authentication & User Management, Game Management, Tournament System, Wallet & Payments, Chat System, Leaderboards, and Admin Functions. All request bodies include both required and optional fields for maximum functionality.",
+    "version": "3.0.0",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{token}}",
+        "type": "string"
+      }
+    ]
+  },
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "exec": [
+          "// Pre-request script for all requests",
+          "console.log('Making request to:', pm.request.url.toString());",
+          "",
+          "// Optional Fields Documentation:",
+          "// Fields marked with (OPTIONAL) in request bodies are not required for basic functionality",
+          "// but provide enhanced features when included. These include:",
+          "// - deviceInfo: Device information for analytics and debugging",
+          "// - metadata: Additional context and tracking information",
+          "// - preferences: User preferences and settings",
+          "// - location: Geographic location data",
+          "// - connectionInfo: Network connection details",
+          "// - securityInfo: Security and verification data",
+          "// - notificationSettings: Notification preferences",
+          "// - animationSettings: UI animation preferences",
+          "// - validationSettings: Data validation options"
+        ],
+        "type": "text/javascript"
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "exec": [
+          "// Common tests for all requests",
+          "pm.test('Response time is less than 5000ms', function () {",
+          "    pm.expect(pm.response.responseTime).to.be.below(5000);",
+          "});",
+          "",
+          "pm.test('Response has valid JSON body', function () {",
+          "    pm.response.to.have.jsonBody();",
+          "});"
+        ],
+        "type": "text/javascript"
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:3000/api",
+      "type": "string"
+    },
+    {
+      "key": "optionalFieldsNote",
+      "value": "Fields marked with (OPTIONAL) in request bodies are not required for basic functionality but provide enhanced features when included",
+      "type": "string"
+    },
+    {
+      "key": "token",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "userId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "gameId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "roomCode",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "tournamentId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "transactionId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "gameTypeId",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "🔐 Authentication & User Management",
+      "item": [
+        {
+          "name": "Health Check",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/auth/status",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "status"
+              ]
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is success', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    pm.expect(responseJson.status).to.eql('success');",
+                  "});",
+                  "",
+                  "pm.test('Response has timestamp', function () {",
+                  "    const responseJson = pm.response.json();",
+                  "    pm.expect(responseJson.timestamp).to.exist;",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Register User",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"phoneNumber\": \"+1234567890\",\n  \"username\": \"testuser\",\n  \"email\": \"test@example.com\",\n  \"referralCode\": \"REF123\",\n  \"avatarUrl\": \"https://example.com/avatar.jpg\",\n  \"gender\": \"Male\",\n  \"deviceInfo\": {\n    \"deviceId\": \"device123\",\n    \"platform\": \"android\",\n    \"version\": \"1.0.0\",\n    \"model\": \"Samsung Galaxy S21\",\n    \"osVersion\": \"11.0\"\n  },\n  \"firstName\": \"John\",\n  \"lastName\": \"Doe\",\n  \"dateOfBirth\": \"1990-01-01\",\n  \"preferences\": {\n    \"notifications\": true,\n    \"language\": \"en\",\n    \"theme\": \"dark\"\n  },\n  \"region\": \"us-west\",\n  \"timezone\": \"America/New_York\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/register",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "register"
+              ]
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('User registered successfully', function () {",
+                  "    pm.response.to.have.status(201);",
+                  "    const responseJson = pm.response.json();",
+                  "    pm.expect(responseJson.status).to.eql('success');",
+                  "    if (responseJson.userId) {",
+                  "        pm.environment.set('userId', responseJson.userId);",
+                  "    }",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Request OTP",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"phoneNumber\": \"+1234567890\",\n  \"purpose\": \"login\",\n  \"deviceInfo\": {\n    \"deviceId\": \"device123\",\n    \"platform\": \"android\",\n    \"version\": \"1.0.0\",\n    \"model\": \"Samsung Galaxy S21\",\n    \"osVersion\": \"11.0\"\n  },\n  \"ipAddress\": \"192.168.1.1\",\n  \"userAgent\": \"Mozilla/5.0 (Android 11.0)\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/request-otp",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "request-otp"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Verify OTP & Login",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"phoneNumber\": \"+1234567890\",\n  \"otp\": \"123456\",\n  \"deviceInfo\": {\n    \"deviceId\": \"device123\",\n    \"platform\": \"android\",\n    \"version\": \"1.0.0\",\n    \"model\": \"Samsung Galaxy S21\",\n    \"osVersion\": \"11.0\",\n    \"pushToken\": \"fcm_token_here\"\n  },\n  \"ipAddress\": \"192.168.1.1\",\n  \"userAgent\": \"Mozilla/5.0 (Android 11.0)\",\n  \"rememberMe\": true,\n  \"sessionDuration\": 86400\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/verify",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "verify"
+              ]
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Login successful', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "    const responseJson = pm.response.json();",
+                  "    pm.expect(responseJson.token).to.exist;",
+                  "    pm.environment.set('token', responseJson.token);",
+                  "    if (responseJson.user && responseJson.user.id) {",
+                  "        pm.environment.set('userId', responseJson.user.id);",
+                  "    }",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Verify Token",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/auth/verify-token",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "verify-token"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get User Profile",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/user/profile",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "user",
+                "profile"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update User Profile",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"updateduser\",\n  \"email\": \"updated@example.com\",\n  \"firstName\": \"John\",\n  \"lastName\": \"Smith\",\n  \"dateOfBirth\": \"1990-01-01\",\n  \"avatar\": \"https://example.com/avatar.jpg\",\n  \"preferences\": {\n    \"notifications\": true,\n    \"language\": \"en\",\n    \"theme\": \"dark\",\n    \"soundEnabled\": true,\n    \"autoJoinRooms\": false\n  },\n  \"location\": {\n    \"country\": \"USA\",\n    \"state\": \"CA\",\n    \"city\": \"San Francisco\"\n  }\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/user/profile",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "user",
+                "profile"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Submit KYC",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"aadharNumber\": \"123456789012\",\n  \"panNumber\": \"ABCDE1234F\",\n  \"aadharPhotoUrl\": \"https://example.com/aadhar.jpg\",\n  \"panPhotoUrl\": \"https://example.com/pan.jpg\",\n  \"selfiePhotoUrl\": \"https://example.com/selfie.jpg\",\n  \"personalInfo\": {\n    \"fullName\": \"John Doe Smith\",\n    \"dateOfBirth\": \"1990-01-01\",\n    \"gender\": \"male\",\n    \"nationality\": \"Indian\",\n    \"maritalStatus\": \"single\"\n  },\n  \"address\": {\n    \"street\": \"123 Main Street\",\n    \"city\": \"Mumbai\",\n    \"state\": \"Maharashtra\",\n    \"zipCode\": \"400001\",\n    \"country\": \"India\"\n  },\n  \"occupation\": {\n    \"jobTitle\": \"Software Engineer\",\n    \"company\": \"Tech Corp\",\n    \"annualIncome\": \"750000\",\n    \"incomeSource\": \"salary\"\n  },\n  \"bankDetails\": {\n    \"accountNumber\": \"1234567890\",\n    \"ifscCode\": \"SBIN0001234\",\n    \"bankName\": \"State Bank of India\",\n    \"accountHolderName\": \"John Doe Smith\"\n  },\n  \"emergencyContact\": {\n    \"name\": \"Jane Doe\",\n    \"phone\": \"+91-9876543210\",\n    \"relationship\": \"spouse\"\n  },\n  \"notes\": \"Additional verification information\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/user/kyc",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "user",
+                "kyc"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "🎮 Game Management",
+      "item": [
+        {
+          "name": "Create Game",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"variant\": \"CLASSIC\",\n  \"gameTypeId\": \"{{gameTypeId}}\",\n  \"name\": \"Epic Battle Room\",\n  \"description\": \"High stakes Ludo game\",\n  \"minPlayers\": 2,\n  \"maxPlayers\": 4,\n  \"entryFee\": 100,\n  \"timeLimit\": 1800,\n  \"timePerMove\": 30,\n  \"pointsToWin\": 100,\n  \"maxMoves\": 50,\n  \"password\": \"secret123\",\n  \"isPrivate\": false,\n  \"region\": \"us-west\",\n  \"rules\": {\n    \"skipTurnOnSix\": false,\n    \"multipleTokensPerSquare\": false,\n    \"safeZoneRules\": \"standard\",\n    \"captureReward\": 10,\n    \"bonusTurnOnSix\": true,\n    \"timeoutPenalty\": 5,\n    \"reconnectionTime\": 60,\n    \"disqualificationMoves\": 3,\n    \"winningAmount\": 0,\n    \"powerUpsEnabled\": false,\n    \"allowCustomDice\": false,\n    \"rankingPoints\": {\n      \"first\": 100,\n      \"second\": 60,\n      \"third\": 30,\n      \"fourth\": 10\n    },\n    \"killModeEnabled\": false,\n    \"livesPerPlayer\": 3,\n    \"classicBonusPoints\": 10,\n    \"classicPenaltyPoints\": 5,\n    \"killModeBonus\": 20,\n    \"quickGameTimerEnabled\": true\n  },\n  \"specialSquares\": {\n    \"4\": {\n      \"type\": \"safe\"\n    },\n    \"15\": {\n      \"type\": \"kill\",\n      \"points\": 15\n    },\n    \"24\": {\n      \"type\": \"safe\"\n    },\n    \"30\": {\n      \"type\": \"kill\",\n      \"points\": 15\n    },\n    \"45\": {\n      \"type\": \"kill\",\n      \"points\": 15\n    },\n    \"51\": {\n      \"type\": \"safe\"\n    },\n    \"67\": {\n      \"type\": \"safe\"\n    }\n  },\n  \"allowSpectators\": true,\n  \"maxSpectators\": 10,\n  \"autoStart\": true,\n  \"tags\": [\n    \"competitive\",\n    \"high-stakes\"\n  ],\n  \"deviceInfo\": {\n    \"platform\": \"android\",\n    \"version\": \"1.0.0\"\n  }\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/game",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "game"
+              ]
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Game created successfully', function () {",
+                  "    pm.response.to.have.status(201);",
+                  "    const responseJson = pm.response.json();",
+                  "    if (responseJson.gameId || responseJson.game?.id) {",
+                  "        pm.environment.set('gameId', responseJson.gameId || responseJson.game.id);",
+                  "    }",
+                  "    if (responseJson.roomCode || responseJson.game?.roomCode) {",
+                  "        pm.environment.set('roomCode', responseJson.roomCode || responseJson.game.roomCode);",
+                  "    }",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Join Game",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"password\": \"secret123\",\n  \"preferredColor\": \"red\",\n  \"spectatorMode\": false,\n  \"autoReady\": true,\n  \"joinMessage\": \"Ready to play!\",\n  \"deviceInfo\": {\n    \"platform\": \"android\",\n    \"version\": \"1.0.0\",\n    \"model\": \"Samsung Galaxy S21\",\n    \"osVersion\": \"11.0\"\n  },\n  \"location\": {\n    \"latitude\": 19.076,\n    \"longitude\": 72.8777,\n    \"country\": \"India\"\n  },\n  \"preferences\": {\n    \"soundEnabled\": true,\n    \"notificationsEnabled\": true,\n    \"autoJoinRooms\": false\n  },\n  \"connectionInfo\": {\n    \"connectionType\": \"wifi\",\n    \"signalStrength\": \"strong\"\n  }\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/game/{{gameId}}/join",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "game",
+                "{{gameId}}",
+                "join"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Join Matchmaking",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"gameTypeId\": \"{{gameTypeId}}\",\n  \"variant\": \"CLASSIC\",\n  \"preferredPlayers\": 4,\n  \"entryFeeRange\": {\n    \"min\": 50,\n    \"max\": 200\n  },\n  \"skillLevel\": \"intermediate\",\n  \"maxWaitTime\": 300,\n  \"avoidPlayers\": [],\n  \"preferredRegion\": \"us-west\",\n  \"autoJoin\": true,\n  \"deviceInfo\": {\n    \"platform\": \"android\",\n    \"version\": \"1.0.0\",\n    \"model\": \"Samsung Galaxy S21\"\n  },\n  \"location\": {\n    \"latitude\": 19.076,\n    \"longitude\": 72.8777,\n    \"country\": \"India\"\n  },\n  \"preferences\": {\n    \"preferredColor\": \"red\",\n    \"soundEnabled\": true,\n    \"notificationsEnabled\": true\n  },\n  \"connectionInfo\": {\n    \"connectionType\": \"wifi\",\n    \"signalStrength\": \"strong\"\n  },\n  \"matchmakingSettings\": {\n    \"allowCrossRegion\": false,\n    \"preferSimilarSkill\": true,\n    \"maxPing\": 100\n  }\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/game/matchmaking",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "game",
+                "matchmaking"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Leave Matchmaking",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/game/matchmaking/leave",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "game",
+                "matchmaking",
+                "leave"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Game State",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/game/{{gameId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "game",
+                "{{gameId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Roll Dice",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"rollType\": \"normal\",\n  \"timestamp\": \"{{$timestamp}}\",\n  \"clientSeed\": \"random_client_seed\",\n  \"deviceInfo\": {\n    \"platform\": \"android\",\n    \"version\": \"1.0.0\"\n  },\n  \"gameState\": {\n    \"currentTurn\": 1,\n    \"playerPosition\": 0,\n    \"availableMoves\": [\n      1,\n      2,\n      3,\n      4,\n      5,\n      6\n    ]\n  },\n  \"rollAnimation\": {\n    \"duration\": 2000,\n    \"soundEnabled\": true,\n    \"visualEffects\": true\n  },\n  \"metadata\": {\n    \"clientTimestamp\": \"{{$timestamp}}\",\n    \"sessionId\": \"session_123\",\n    \"rollAttempt\": 1\n  }\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/game/{{gameId}}/roll",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "game",
+                "{{gameId}}",
+                "roll"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Move Piece",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"pieceId\": \"piece_1\",\n  \"fromPosition\": 0,\n  \"toPosition\": 6,\n  \"positions\": [\n    0,\n    1,\n    2,\n    3,\n    4,\n    5,\n    6\n  ],\n  \"moveType\": \"normal\",\n  \"forceMove\": false,\n  \"skipAnimation\": false,\n  \"moveMessage\": \"Great move!\",\n  \"timestamp\": \"{{$timestamp}}\",\n  \"deviceInfo\": {\n    \"platform\": \"android\",\n    \"version\": \"1.0.0\"\n  },\n  \"moveAnimation\": {\n    \"duration\": 1000,\n    \"soundEnabled\": true,\n    \"visualEffects\": true,\n    \"particleEffects\": true\n  },\n  \"gameState\": {\n    \"currentTurn\": 1,\n    \"playerPosition\": 0,\n    \"diceValue\": 6,\n    \"availablePieces\": [\n      \"piece_1\",\n      \"piece_2\",\n      \"piece_3\",\n      \"piece_4\"\n    ]\n  },\n  \"moveValidation\": {\n    \"validatePath\": true,\n    \"checkCollisions\": true,\n    \"validateRules\": true\n  },\n  \"metadata\": {\n    \"clientTimestamp\": \"{{$timestamp}}\",\n    \"sessionId\": \"session_123\",\n    \"moveAttempt\": 1,\n    \"moveReason\": \"dice_roll\"\n  }\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/game/{{gameId}}/move",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "game",
+                "{{gameId}}",
+                "move"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Active Games",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/game/active?page=1&limit=10&status=active",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "game",
+                "active"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "10"
+                },
+                {
+                  "key": "status",
+                  "value": "active"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Can Rejoin Game",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/game/{{gameId}}/can-rejoin",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "game",
+                "{{gameId}}",
+                "can-rejoin"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Rejoin Game",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/game/{{gameId}}/rejoin",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "game",
+                "{{gameId}}",
+                "rejoin"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Leave Game",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"gameId\": \"{{gameId}}\",\n  \"reason\": \"voluntary\",\n  \"message\": \"Thanks for the game!\",\n  \"deviceInfo\": {\n    \"platform\": \"android\",\n    \"version\": \"1.0.0\"\n  },\n  \"leaveDetails\": {\n    \"leaveType\": \"voluntary\",\n    \"gameProgress\": 0.5,\n    \"currentScore\": 50,\n    \"timeSpent\": 900\n  },\n  \"feedback\": {\n    \"rating\": 4,\n    \"comment\": \"Great game experience!\",\n    \"wouldPlayAgain\": true\n  },\n  \"metadata\": {\n    \"clientTimestamp\": \"{{$timestamp}}\",\n    \"sessionId\": \"session_123\",\n    \"leaveReason\": \"personal_commitment\"\n  }\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/game/leave",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "game",
+                "leave"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "🏠 Game Rooms",
+      "item": [
+        {
+          "name": "Create Room",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Elite Gaming Room\",\n  \"description\": \"Premium room for skilled players\",\n  \"gameTypeId\": \"{{gameTypeId}}\",\n  \"variant\": \"CLASSIC\",\n  \"maxPlayers\": 4,\n  \"minPlayers\": 2,\n  \"entryFee\": 100,\n  \"timeLimit\": 1800,\n  \"timePerMove\": 30,\n  \"pointsToWin\": 100,\n  \"maxMoves\": 50,\n  \"isPrivate\": false,\n  \"password\": \"elite123\",\n  \"region\": \"us-west\",\n  \"rules\": {\n    \"skipTurnOnSix\": false,\n    \"multipleTokensPerSquare\": false,\n    \"safeZoneRules\": \"standard\",\n    \"captureReward\": 10,\n    \"bonusTurnOnSix\": true,\n    \"timeoutPenalty\": 5,\n    \"reconnectionTime\": 60,\n    \"disqualificationMoves\": 3,\n    \"winningAmount\": 0,\n    \"powerUpsEnabled\": false,\n    \"allowCustomDice\": false,\n    \"rankingPoints\": {\n      \"first\": 100,\n      \"second\": 60,\n      \"third\": 30,\n      \"fourth\": 10\n    },\n    \"killModeEnabled\": false,\n    \"livesPerPlayer\": 3,\n    \"classicBonusPoints\": 10,\n    \"classicPenaltyPoints\": 5,\n    \"killModeBonus\": 20,\n    \"quickGameTimerEnabled\": true\n  },\n  \"specialSquares\": {\n    \"4\": {\n      \"type\": \"safe\"\n    },\n    \"15\": {\n      \"type\": \"kill\",\n      \"points\": 15\n    },\n    \"24\": {\n      \"type\": \"safe\"\n    },\n    \"30\": {\n      \"type\": \"kill\",\n      \"points\": 15\n    },\n    \"45\": {\n      \"type\": \"kill\",\n      \"points\": 15\n    },\n    \"51\": {\n      \"type\": \"safe\"\n    },\n    \"67\": {\n      \"type\": \"safe\"\n    }\n  },\n  \"tags\": [\n    \"competitive\",\n    \"skilled\",\n    \"premium\"\n  ],\n  \"settings\": {\n    \"autoStart\": true,\n    \"allowSpectators\": true,\n    \"maxSpectators\": 20,\n    \"chatEnabled\": true,\n    \"voiceChat\": false,\n    \"spectatorChat\": true\n  },\n  \"deviceInfo\": {\n    \"platform\": \"android\",\n    \"version\": \"1.0.0\"\n  },\n  \"roomPreferences\": {\n    \"allowLateJoin\": true,\n    \"autoBalanceTeams\": false,\n    \"requireVerification\": false\n  }\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/room/create",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "room",
+                "create"
+              ]
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Room created successfully', function () {",
+                  "    pm.response.to.have.status(201);",
+                  "    const responseJson = pm.response.json();",
+                  "    if (responseJson.roomCode || responseJson.room?.code) {",
+                  "        pm.environment.set('roomCode', responseJson.roomCode || responseJson.room.code);",
+                  "    }",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Join Room",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"password\": \"elite123\",\n  \"spectatorMode\": false,\n  \"deviceInfo\": {\n    \"platform\": \"android\",\n    \"version\": \"1.0.0\",\n    \"model\": \"Samsung Galaxy S21\",\n    \"osVersion\": \"11.0\"\n  },\n  \"location\": {\n    \"latitude\": 19.076,\n    \"longitude\": 72.8777,\n    \"country\": \"India\"\n  },\n  \"preferences\": {\n    \"preferredColor\": \"red\",\n    \"soundEnabled\": true,\n    \"notificationsEnabled\": true,\n    \"autoReady\": true,\n    \"joinMessage\": \"Ready to play!\"\n  },\n  \"connectionInfo\": {\n    \"connectionType\": \"wifi\",\n    \"signalStrength\": \"strong\",\n    \"ping\": 50\n  },\n  \"joinSettings\": {\n    \"autoJoinGame\": true,\n    \"acceptInvite\": true,\n    \"joinAsSpectator\": false\n  }\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/room/{{roomCode}}/join",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "room",
+                "{{roomCode}}",
+                "join"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Active Rooms",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/room/active?page=1&limit=20&gameType={{gameTypeId}}&region=us-west&minPlayers=2&maxPlayers=4",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "room",
+                "active"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "20"
+                },
+                {
+                  "key": "gameType",
+                  "value": "{{gameTypeId}}"
+                },
+                {
+                  "key": "region",
+                  "value": "us-west"
+                },
+                {
+                  "key": "minPlayers",
+                  "value": "2"
+                },
+                {
+                  "key": "maxPlayers",
+                  "value": "4"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Cleanup Inactive Rooms",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/room/cleanup",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "room",
+                "cleanup"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "🏆 Tournaments",
+      "item": [
+        {
+          "name": "Create Tournament",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Grand Championship 2024\",\n  \"description\": \"Ultimate Ludo tournament with amazing prizes\",\n  \"gameTypeId\": \"{{gameTypeId}}\",\n  \"variant\": \"CLASSIC\",\n  \"entryFee\": 500,\n  \"maxParticipants\": 128,\n  \"minParticipants\": 64,\n  \"startDate\": \"2024-12-01T10:00:00Z\",\n  \"registrationDeadline\": \"2024-11-25T23:59:59Z\",\n  \"format\": \"elimination\",\n  \"rounds\": 7,\n  \"timePerMove\": 30,\n  \"timePerGame\": 1800,\n  \"pointsToWin\": 100,\n  \"maxMoves\": 50,\n  \"ageRestrictions\": {\n    \"minAge\": 18,\n    \"maxAge\": 65\n  },\n  \"skillLevels\": [\n    \"intermediate\",\n    \"advanced\",\n    \"expert\"\n  ],\n  \"prizeDistribution\": {\n    \"first\": 25000,\n    \"second\": 15000,\n    \"third\": 8000,\n    \"fourthToEighth\": 2000\n  },\n  \"rules\": {\n    \"skipTurnOnSix\": false,\n    \"multipleTokensPerSquare\": false,\n    \"safeZoneRules\": \"standard\",\n    \"captureReward\": 10,\n    \"bonusTurnOnSix\": true,\n    \"timeoutPenalty\": 5,\n    \"reconnectionTime\": 60,\n    \"disqualificationMoves\": 3,\n    \"winningAmount\": 0,\n    \"powerUpsEnabled\": false,\n    \"allowCustomDice\": false,\n    \"rankingPoints\": {\n      \"first\": 100,\n      \"second\": 60,\n      \"third\": 30,\n      \"fourth\": 10\n    },\n    \"allowSpectators\": true,\n    \"chatEnabled\": false,\n    \"voiceChat\": false,\n    \"killModeEnabled\": false,\n    \"livesPerPlayer\": 3,\n    \"classicBonusPoints\": 10,\n    \"classicPenaltyPoints\": 5,\n    \"killModeBonus\": 20,\n    \"quickGameTimerEnabled\": true\n  },\n  \"specialSquares\": {\n    \"4\": {\n      \"type\": \"safe\"\n    },\n    \"15\": {\n      \"type\": \"kill\",\n      \"points\": 15\n    },\n    \"24\": {\n      \"type\": \"safe\"\n    },\n    \"30\": {\n      \"type\": \"kill\",\n      \"points\": 15\n    },\n    \"45\": {\n      \"type\": \"kill\",\n      \"points\": 15\n    },\n    \"51\": {\n      \"type\": \"safe\"\n    },\n    \"67\": {\n      \"type\": \"safe\"\n    }\n  },\n  \"streaming\": {\n    \"enabled\": true,\n    \"platforms\": [\n      \"twitch\",\n      \"youtube\"\n    ],\n    \"streamKey\": \"tournament_stream_key\"\n  },\n  \"sponsorInfo\": {\n    \"sponsors\": [\n      \"GameCorp\",\n      \"TechInc\"\n    ],\n    \"logoUrls\": [\n      \"https://example.com/logo1.png\"\n    ]\n  },\n  \"broadcasting\": {\n    \"channels\": [\n      \"ESPN Gaming\",\n      \"Twitch Esports\"\n    ],\n    \"commentary\": true,\n    \"highlightReel\": true\n  },\n  \"contact\": {\n    \"email\": \"tournament@ludogame.com\",\n    \"phone\": \"+1-555-0123\",\n    \"website\": \"https://tournament.ludogame.com\"\n  },\n  \"terms\": {\n    \"agreementUrl\": \"https://ludogame.com/tournament-terms\",\n    \"privacyPolicy\": \"https://ludogame.com/privacy\"\n  },\n  \"autoStart\": {\n    \"enabled\": true,\n    \"minParticipants\": 64\n  },\n  \"schedule\": {\n    \"breakTime\": 300,\n    \"timezone\": \"America/New_York\"\n  },\n  \"deviceInfo\": {\n    \"platform\": \"android\",\n    \"version\": \"1.0.0\"\n  },\n  \"tournamentSettings\": {\n    \"allowLateRegistration\": false,\n    \"requireKYC\": true,\n    \"requireMinimumGames\": 10,\n    \"minimumRating\": 1000\n  }\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/tournament",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "tournament"
+              ]
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Tournament created successfully', function () {",
+                  "    pm.response.to.have.status(201);",
+                  "    const responseJson = pm.response.json();",
+                  "    if (responseJson.tournamentId || responseJson.tournament?.id) {",
+                  "        pm.environment.set('tournamentId', responseJson.tournamentId || responseJson.tournament.id);",
+                  "    }",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Join Tournament",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"playerInfo\": {\n    \"displayName\": \"ProGamer123\",\n    \"teamName\": \"Lightning Bolts\",\n    \"experience\": \"advanced\",\n    \"skillLevel\": \"expert\",\n    \"previousTournaments\": 5,\n    \"bestFinish\": \"quarterfinal\"\n  },\n  \"agreesToTerms\": true,\n  \"emergencyContact\": {\n    \"name\": \"Jane Doe\",\n    \"phone\": \"+91-9876543210\",\n    \"relationship\": \"spouse\",\n    \"email\": \"jane.doe@example.com\"\n  },\n  \"deviceInfo\": {\n    \"platform\": \"android\",\n    \"version\": \"1.0.0\",\n    \"model\": \"Samsung Galaxy S21\"\n  },\n  \"preferences\": {\n    \"preferredColor\": \"red\",\n    \"soundEnabled\": true,\n    \"notificationsEnabled\": true,\n    \"streamingConsent\": true\n  },\n  \"registrationDetails\": {\n    \"registrationTime\": \"{{$timestamp}}\",\n    \"paymentMethod\": \"wallet\",\n    \"entryFeePaid\": true,\n    \"kycVerified\": true\n  },\n  \"tournamentSettings\": {\n    \"autoJoinMatches\": true,\n    \"allowSpectators\": true,\n    \"receiveUpdates\": true\n  }\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/tournament/{{tournamentId}}/join",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "tournament",
+                "{{tournamentId}}",
+                "join"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Tournaments",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/tournament?status=upcoming&page=1&limit=10&gameType={{gameTypeId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "tournament"
+              ],
+              "query": [
+                {
+                  "key": "status",
+                  "value": "upcoming"
+                },
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "10"
+                },
+                {
+                  "key": "gameType",
+                  "value": "{{gameTypeId}}"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Tournament Details",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/tournament/{{tournamentId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "tournament",
+                "{{tournamentId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Advance Tournament",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"roundResults\": [\n    {\n      \"matchId\": \"match_1\",\n      \"winnerId\": \"{{userId}}\",\n      \"loserId\": \"player_2\",\n      \"gameData\": {\n        \"duration\": 1200,\n        \"moves\": 45,\n        \"score\": 100,\n        \"finalPosition\": 1,\n        \"pointsEarned\": 100,\n        \"bonusPoints\": 10\n      },\n      \"matchDetails\": {\n        \"startTime\": \"{{$timestamp}}\",\n        \"endTime\": \"{{$timestamp}}\",\n        \"totalPlayers\": 4,\n        \"roundNumber\": 1\n      }\n    }\n  ],\n  \"tournamentProgress\": {\n    \"currentRound\": 1,\n    \"totalRounds\": 7,\n    \"remainingPlayers\": 64,\n    \"eliminatedPlayers\": 64\n  },\n  \"deviceInfo\": {\n    \"platform\": \"android\",\n    \"version\": \"1.0.0\"\n  },\n  \"advanceSettings\": {\n    \"autoScheduleNextRound\": true,\n    \"notifyPlayers\": true,\n    \"updateLeaderboard\": true\n  }\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/tournament/{{tournamentId}}/advance",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "tournament",
+                "{{tournamentId}}",
+                "advance"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Tournament Standings",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/tournament/{{tournamentId}}/standings",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "tournament",
+                "{{tournamentId}}",
+                "standings"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "💰 Wallet & Payments",
+      "item": [
+        {
+          "name": "Get Wallet Balance",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/wallet/balance",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "wallet",
+                "balance"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Add Funds",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"amount\": 1000,\n  \"paymentMethod\": \"manual\",\n  \"utrNumber\": \"UTR123456789\",\n  \"paymentScreenshot\": \"base64_encoded_image\",\n  \"bankDetails\": {\n    \"accountNumber\": \"1234567890\",\n    \"ifscCode\": \"SBIN0001234\",\n    \"bankName\": \"State Bank of India\",\n    \"accountHolderName\": \"John Doe\",\n    \"branchName\": \"Mumbai Main Branch\",\n    \"transactionDate\": \"2024-01-15\"\n  },\n  \"promocode\": \"WELCOME100\",\n  \"deviceInfo\": {\n    \"platform\": \"android\",\n    \"version\": \"1.0.0\",\n    \"deviceId\": \"device123\",\n    \"model\": \"Samsung Galaxy S21\",\n    \"osVersion\": \"11.0\"\n  },\n  \"paymentDetails\": {\n    \"transactionDate\": \"{{$timestamp}}\",\n    \"paymentMode\": \"NEFT\",\n    \"referenceNumber\": \"REF123456\",\n    \"senderName\": \"John Doe\",\n    \"senderAccount\": \"9876543210\"\n  },\n  \"notes\": \"Payment via NEFT transfer\",\n  \"metadata\": {\n    \"clientTimestamp\": \"{{$timestamp}}\",\n    \"sessionId\": \"session_123\",\n    \"ipAddress\": \"192.168.1.1\",\n    \"userAgent\": \"Mozilla/5.0 (Android 11.0)\"\n  },\n  \"verificationInfo\": {\n    \"selfieWithId\": \"base64_encoded_image\",\n    \"bankStatement\": \"base64_encoded_image\",\n    \"additionalDocuments\": [\n      \"base64_encoded_image\"\n    ]\n  }\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/wallet/add",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "wallet",
+                "add"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Withdraw Funds",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"amount\": 500,\n  \"withdrawalMethod\": \"upi\",\n  \"bankAccountDetails\": {\n    \"accountNumber\": \"9876543210\",\n    \"ifscCode\": \"HDFC0001234\",\n    \"bankName\": \"HDFC Bank\",\n    \"accountHolderName\": \"John Doe\",\n    \"upiId\": \"johndoe@paytm\",\n    \"branchName\": \"Mumbai Main Branch\",\n    \"accountType\": \"savings\"\n  },\n  \"otp\": \"123456\",\n  \"priority\": \"standard\",\n  \"notificationPreferences\": {\n    \"sms\": true,\n    \"email\": true,\n    \"push\": true,\n    \"whatsapp\": false\n  },\n  \"reason\": \"Winnings withdrawal\",\n  \"deviceInfo\": {\n    \"platform\": \"android\",\n    \"version\": \"1.0.0\",\n    \"deviceId\": \"device123\",\n    \"model\": \"Samsung Galaxy S21\",\n    \"osVersion\": \"11.0\"\n  },\n  \"withdrawalDetails\": {\n    \"requestDate\": \"{{$timestamp}}\",\n    \"expectedProcessingTime\": \"24-48 hours\",\n    \"processingFee\": 0,\n    \"tdsAmount\": 0,\n    \"netAmount\": 500\n  },\n  \"kycInfo\": {\n    \"kycVerified\": true,\n    \"kycStatus\": \"verified\",\n    \"kycVerifiedAt\": \"2024-01-01T00:00:00Z\"\n  },\n  \"metadata\": {\n    \"clientTimestamp\": \"{{$timestamp}}\",\n    \"sessionId\": \"session_123\",\n    \"ipAddress\": \"192.168.1.1\",\n    \"userAgent\": \"Mozilla/5.0 (Android 11.0)\"\n  },\n  \"additionalInfo\": {\n    \"sourceOfFunds\": \"game_winnings\",\n    \"taxDeclaration\": true,\n    \"termsAccepted\": true\n  }\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/wallet/withdraw",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "wallet",
+                "withdraw"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Transaction History",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/wallet/transactions?page=1&limit=20&type=all&status=all&startDate=2024-01-01&endDate=2024-12-31",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "wallet",
+                "transactions"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "20"
+                },
+                {
+                  "key": "type",
+                  "value": "all"
+                },
+                {
+                  "key": "status",
+                  "value": "all"
+                },
+                {
+                  "key": "startDate",
+                  "value": "2024-01-01"
+                },
+                {
+                  "key": "endDate",
+                  "value": "2024-12-31"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Transfer Winnings",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"gameId\": \"{{gameId}}\",\n  \"amount\": 200,\n  \"description\": \"Game winnings transfer\",\n  \"deviceInfo\": {\n    \"platform\": \"android\",\n    \"version\": \"1.0.0\",\n    \"deviceId\": \"device123\"\n  },\n  \"transferDetails\": {\n    \"transferType\": \"game_winnings\",\n    \"gameResult\": \"winner\",\n    \"finalPosition\": 1,\n    \"totalPlayers\": 4,\n    \"gameDuration\": 1200,\n    \"pointsEarned\": 100\n  },\n  \"walletInfo\": {\n    \"sourceWallet\": \"winningAmount\",\n    \"destinationWallet\": \"balance\",\n    \"previousBalance\": 1000,\n    \"newBalance\": 1200\n  },\n  \"metadata\": {\n    \"clientTimestamp\": \"{{$timestamp}}\",\n    \"sessionId\": \"session_123\",\n    \"transferReason\": \"game_completion\"\n  },\n  \"notificationSettings\": {\n    \"notifyUser\": true,\n    \"sendEmail\": true,\n    \"sendSMS\": false,\n    \"pushNotification\": true\n  }\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/wallet/transfer-winnings",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "wallet",
+                "transfer-winnings"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Withdrawal UPI",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"upiId\": \"newupi@paytm\",\n  \"verificationCode\": \"123456\",\n  \"deviceInfo\": {\n    \"platform\": \"android\",\n    \"version\": \"1.0.0\",\n    \"deviceId\": \"device123\"\n  },\n  \"verificationDetails\": {\n    \"verificationMethod\": \"otp\",\n    \"otpSentTo\": \"+91-9876543210\",\n    \"verificationAttempts\": 1,\n    \"lastVerificationAttempt\": \"{{$timestamp}}\"\n  },\n  \"upiDetails\": {\n    \"upiProvider\": \"paytm\",\n    \"upiType\": \"vpa\",\n    \"isVerified\": false,\n    \"verificationStatus\": \"pending\"\n  },\n  \"securityInfo\": {\n    \"ipAddress\": \"192.168.1.1\",\n    \"userAgent\": \"Mozilla/5.0 (Android 11.0)\",\n    \"sessionId\": \"session_123\",\n    \"deviceFingerprint\": \"device_fingerprint_123\"\n  },\n  \"metadata\": {\n    \"clientTimestamp\": \"{{$timestamp}}\",\n    \"updateReason\": \"security_update\",\n    \"previousUpiId\": \"oldupi@paytm\"\n  }\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/wallet/update-withdrawal-upi",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "wallet",
+                "update-withdrawal-upi"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Initiate Paytm Payment",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"amount\": 1000,\n  \"currency\": \"INR\",\n  \"orderId\": \"ORDER_{{$timestamp}}\",\n  \"customerInfo\": {\n    \"customerId\": \"{{userId}}\",\n    \"email\": \"user@example.com\",\n    \"mobile\": \"+91-9876543210\",\n    \"name\": \"John Doe\",\n    \"address\": \"123 Main Street, Mumbai, Maharashtra\"\n  },\n  \"callbackUrl\": \"https://yourapp.com/payment/callback\",\n  \"returnUrl\": \"https://yourapp.com/payment/return\",\n  \"website\": \"WEBSTAGING\",\n  \"industryType\": \"Retail\",\n  \"channelId\": \"WEB\",\n  \"deviceInfo\": {\n    \"platform\": \"android\",\n    \"version\": \"1.0.0\",\n    \"deviceId\": \"device123\",\n    \"model\": \"Samsung Galaxy S21\",\n    \"osVersion\": \"11.0\"\n  },\n  \"paymentPreferences\": {\n    \"preferredPaymentMode\": \"UPI\",\n    \"allowMultiplePaymentMethods\": true,\n    \"savePaymentMethod\": false\n  },\n  \"metadata\": {\n    \"clientTimestamp\": \"{{$timestamp}}\",\n    \"sessionId\": \"session_123\",\n    \"ipAddress\": \"192.168.1.1\",\n    \"userAgent\": \"Mozilla/5.0 (Android 11.0)\",\n    \"purpose\": \"wallet_recharge\"\n  },\n  \"securityInfo\": {\n    \"deviceFingerprint\": \"device_fingerprint_123\",\n    \"location\": {\n      \"latitude\": 19.076,\n      \"longitude\": 72.8777,\n      \"country\": \"India\"\n    }\n  }\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/payment/paytm/initiate",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "payment",
+                "paytm",
+                "initiate"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Paytm Payment Callback",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/x-www-form-urlencoded"
+              }
+            ],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "ORDERID",
+                  "value": "ORDER_123456"
+                },
+                {
+                  "key": "TXNID",
+                  "value": "TXN_789012"
+                },
+                {
+                  "key": "TXNAMOUNT",
+                  "value": "1000.00"
+                },
+                {
+                  "key": "STATUS",
+                  "value": "TXN_SUCCESS"
+                },
+                {
+                  "key": "CHECKSUMHASH",
+                  "value": "generated_checksum_hash"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/payment/paytm/callback",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "payment",
+                "paytm",
+                "callback"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Transaction Status",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/payment/transaction/{{transactionId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "payment",
+                "transaction",
+                "{{transactionId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Payment Transaction History",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/payment/transactions/history?page=1&limit=20&status=all&startDate=2024-01-01&endDate=2024-12-31",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "payment",
+                "transactions",
+                "history"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "20"
+                },
+                {
+                  "key": "status",
+                  "value": "all"
+                },
+                {
+                  "key": "startDate",
+                  "value": "2024-01-01"
+                },
+                {
+                  "key": "endDate",
+                  "value": "2024-12-31"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Filter Transactions by Status",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/payment/transaction/filter/pending",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "payment",
+                "transaction",
+                "filter",
+                "pending"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Manual Payment Config",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/payment/config/manual",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "payment",
+                "config",
+                "manual"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Check Manual Payment Status",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/payment/config/manual/status",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "payment",
+                "config",
+                "manual",
+                "status"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Validate Manual Payment Amount",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"amount\": 1000,\n  \"paymentMethod\": \"manual\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/payment/config/manual/validate",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "payment",
+                "config",
+                "manual",
+                "validate"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Available Payment Methods",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/payment/config/methods",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "payment",
+                "config",
+                "methods"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Validate Payment Amount",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"amount\": 500,\n  \"currency\": \"INR\",\n  \"paymentMethod\": \"paytm\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/payment/config/validate",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "payment",
+                "config",
+                "validate"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "🎯 Game Types",
+      "item": [
+        {
+          "name": "Create Game Type (Admin)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Speed Ludo\",\n  \"description\": \"Fast-paced Ludo variant with reduced turn times\",\n  \"variant\": \"CLASSIC\",\n  \"isActive\": true,\n  \"maxPlayers\": 4,\n  \"minPlayers\": 2,\n  \"entryFee\": 50,\n  \"timeLimit\": 900,\n  \"timePerMove\": 15,\n  \"turnTimeLimit\": 15,\n  \"pointsToWin\": 100,\n  \"maxMoves\": 30,\n  \"quickGameMoves\": 20,\n  \"quickGamePoints\": 150,\n  \"quickGameTimeLimit\": 300,\n  \"killModePoints\": 30,\n  \"lifeCount\": 2,\n  \"killModeBonus\": 15,\n  \"classicBonusPoints\": 8,\n  \"classicPenaltyPoints\": 3,\n  \"configId\": 1,\n  \"twoPlayers\": {\n    \"first\": {\n      \"type\": \"winningAmount\",\n      \"amount\": 90\n    },\n    \"second\": {\n      \"type\": \"winningAmount\",\n      \"amount\": 0\n    }\n  },\n  \"threePlayers\": {\n    \"first\": {\n      \"type\": \"winningAmount\",\n      \"amount\": 120\n    },\n    \"second\": {\n      \"type\": \"winningAmount\",\n      \"amount\": 30\n    },\n    \"third\": {\n      \"type\": \"winningAmount\",\n      \"amount\": 0\n    }\n  },\n  \"fourPlayers\": {\n    \"first\": {\n      \"type\": \"winningAmount\",\n      \"amount\": 140\n    },\n    \"second\": {\n      \"type\": \"winningAmount\",\n      \"amount\": 40\n    },\n    \"third\": {\n      \"type\": \"winningAmount\",\n      \"amount\": 20\n    },\n    \"fourth\": {\n      \"type\": \"winningAmount\",\n      \"amount\": 0\n    }\n  },\n  \"rules\": {\n    \"skipTurnOnSix\": false,\n    \"multipleTokensPerSquare\": false,\n    \"safeZoneRules\": \"standard\",\n    \"captureReward\": 8,\n    \"bonusTurnOnSix\": true,\n    \"timeoutPenalty\": 3,\n    \"reconnectionTime\": 30,\n    \"disqualificationMoves\": 2,\n    \"winningAmount\": 0,\n    \"powerUpsEnabled\": false,\n    \"allowCustomDice\": false,\n    \"rankingPoints\": {\n      \"first\": 100,\n      \"second\": 60,\n      \"third\": 30,\n      \"fourth\": 10\n    },\n    \"killModeEnabled\": false,\n    \"livesPerPlayer\": 3,\n    \"classicBonusPoints\": 10,\n    \"classicPenaltyPoints\": 5,\n    \"killModeBonus\": 20,\n    \"quickGameTimerEnabled\": true\n  },\n  \"specialSquares\": {\n    \"4\": {\n      \"type\": \"safe\"\n    },\n    \"15\": {\n      \"type\": \"kill\",\n      \"points\": 15\n    },\n    \"24\": {\n      \"type\": \"safe\"\n    },\n    \"30\": {\n      \"type\": \"kill\",\n      \"points\": 15\n    },\n    \"45\": {\n      \"type\": \"kill\",\n      \"points\": 15\n    },\n    \"51\": {\n      \"type\": \"safe\"\n    },\n    \"67\": {\n      \"type\": \"safe\"\n    }\n  },\n  \"visual\": {\n    \"icon\": \"https://example.com/speed-ludo-icon.png\",\n    \"thumbnail\": \"https://example.com/speed-ludo-thumb.jpg\",\n    \"backgroundColor\": \"#FF6B35\",\n    \"textColor\": \"#FFFFFF\"\n  },\n  \"deviceInfo\": {\n    \"platform\": \"admin_web\",\n    \"version\": \"1.0.0\"\n  },\n  \"adminMetadata\": {\n    \"createdBy\": \"admin@ludogame.com\",\n    \"creationReason\": \"user_demand\",\n    \"testingStatus\": \"completed\",\n    \"approvalStatus\": \"approved\"\n  },\n  \"status\": \"ACTIVE\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/game-type",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "game-type"
+              ]
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Game type created successfully', function () {",
+                  "    pm.response.to.have.status(201);",
+                  "    const responseJson = pm.response.json();",
+                  "    if (responseJson.gameTypeId || responseJson.gameType?.id) {",
+                  "        pm.environment.set('gameTypeId', responseJson.gameTypeId || responseJson.gameType.id);",
+                  "    }",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Get Game Types List",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/game-type?page=1&limit=10&isActive=true",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "game-type"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "10"
+                },
+                {
+                  "key": "isActive",
+                  "value": "true"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Game Type Details",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/game-type/details/{{gameTypeId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "game-type",
+                "details",
+                "{{gameTypeId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Game Type (Admin)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Updated Speed Ludo\",\n  \"description\": \"Enhanced fast-paced Ludo variant\",\n  \"configuration\": {\n    \"timePerMove\": 20,\n    \"bonusPoints\": {\n      \"homeEntry\": 15,\n      \"killPiece\": 25,\n      \"safePiece\": 8\n    }\n  }\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/game-type/{{gameTypeId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "game-type",
+                "{{gameTypeId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Game Type (Admin)",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/game-type/{{gameTypeId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "game-type",
+                "{{gameTypeId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Game Type (Admin View)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/game-type/admin/{{gameTypeId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "game-type",
+                "admin",
+                "{{gameTypeId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Toggle Game Type Status (Admin)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"isActive\": false,\n  \"reason\": \"Maintenance mode\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/game-type/{{gameTypeId}}/toggle-status",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "game-type",
+                "{{gameTypeId}}",
+                "toggle-status"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "💬 Chat System",
+      "item": [
+        {
+          "name": "Send Message",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"gameId\": \"{{gameId}}\",\n  \"message\": \"Good luck everyone! 🎮\",\n  \"messageType\": \"text\",\n  \"priority\": \"normal\",\n  \"isPrivate\": false,\n  \"recipientId\": null,\n  \"attachments\": {\n    \"emoji\": \"🎮\",\n    \"sticker\": null,\n    \"gif\": null,\n    \"image\": null,\n    \"audio\": null\n  },\n  \"mentions\": [],\n  \"hashtags\": [\n    \"#goodluck\"\n  ],\n  \"autoTranslate\": false,\n  \"targetLanguage\": \"en\",\n  \"isEphemeral\": false,\n  \"expirationTime\": null,\n  \"deviceInfo\": {\n    \"platform\": \"android\",\n    \"version\": \"1.0.0\",\n    \"deviceId\": \"device123\"\n  },\n  \"messageSettings\": {\n    \"enableProfanityFilter\": true,\n    \"enableSpamProtection\": true,\n    \"maxMessageLength\": 500,\n    \"allowEmojis\": true,\n    \"allowAttachments\": true\n  },\n  \"metadata\": {\n    \"clientTimestamp\": \"{{$timestamp}}\",\n    \"deviceType\": \"mobile\",\n    \"sessionId\": \"session_123\",\n    \"messageId\": \"msg_{{$timestamp}}\"\n  },\n  \"deliverySettings\": {\n    \"deliveryReceipt\": true,\n    \"readReceipt\": true,\n    \"typingIndicator\": true,\n    \"offlineDelivery\": true\n  }\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/chat/send",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "chat",
+                "send"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Game Messages",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/chat/{{gameId}}?page=1&limit=50&since={{$timestamp}}&includeSystem=true",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "chat",
+                "{{gameId}}"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "50"
+                },
+                {
+                  "key": "since",
+                  "value": "{{$timestamp}}"
+                },
+                {
+                  "key": "includeSystem",
+                  "value": "true"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "🏅 Leaderboard",
+      "item": [
+        {
+          "name": "Get Leaderboard",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/leaderboard?type=global&period=monthly&page=1&limit=100&gameType={{gameTypeId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "leaderboard"
+              ],
+              "query": [
+                {
+                  "key": "type",
+                  "value": "global"
+                },
+                {
+                  "key": "period",
+                  "value": "monthly"
+                },
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "100"
+                },
+                {
+                  "key": "gameType",
+                  "value": "{{gameTypeId}}"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Leaderboards (Admin)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"forceUpdate\": true,\n  \"period\": \"all\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/leaderboard/update",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "leaderboard",
+                "update"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "🔧 Admin - User Management",
+      "item": [
+        {
+          "name": "Get All Users",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/users?page=1&limit=50&status=all&sortBy=createdAt&order=desc",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "users"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "50"
+                },
+                {
+                  "key": "status",
+                  "value": "all"
+                },
+                {
+                  "key": "sortBy",
+                  "value": "createdAt"
+                },
+                {
+                  "key": "order",
+                  "value": "desc"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get User by ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/users/{{userId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "users",
+                "{{userId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update User",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"updateduser\",\n  \"email\": \"updated@example.com\",\n  \"isActive\": true,\n  \"role\": \"user\",\n  \"kycStatus\": \"approved\",\n  \"adminNotes\": \"User verification complete\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/admin/users/{{userId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "users",
+                "{{userId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete User",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/users/{{userId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "users",
+                "{{userId}}"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "🔧 Admin - Game Management",
+      "item": [
+        {
+          "name": "Get All Games",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/games?page=1&limit=50&status=all&gameType={{gameTypeId}}&startDate=2024-01-01&endDate=2024-12-31",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "games"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "50"
+                },
+                {
+                  "key": "status",
+                  "value": "all"
+                },
+                {
+                  "key": "gameType",
+                  "value": "{{gameTypeId}}"
+                },
+                {
+                  "key": "startDate",
+                  "value": "2024-01-01"
+                },
+                {
+                  "key": "endDate",
+                  "value": "2024-12-31"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Game by ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/games/{{gameId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "games",
+                "{{gameId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Game",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"completed\",\n  \"adminNotes\": \"Game manually completed due to technical issue\",\n  \"forceEnd\": true\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/admin/games/{{gameId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "games",
+                "{{gameId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Game",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/games/{{gameId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "games",
+                "{{gameId}}"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "🔧 Admin - Tournament Management",
+      "item": [
+        {
+          "name": "Get All Tournaments",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/tournaments?page=1&limit=20&status=all&startDate=2024-01-01&endDate=2024-12-31",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "tournaments"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "20"
+                },
+                {
+                  "key": "status",
+                  "value": "all"
+                },
+                {
+                  "key": "startDate",
+                  "value": "2024-01-01"
+                },
+                {
+                  "key": "endDate",
+                  "value": "2024-12-31"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Tournament by ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/tournaments/{{tournamentId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "tournaments",
+                "{{tournamentId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Tournament",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"cancelled\",\n  \"adminNotes\": \"Tournament cancelled due to insufficient participants\",\n  \"refundParticipants\": true\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/admin/tournaments/{{tournamentId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "tournaments",
+                "{{tournamentId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Tournament",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/tournaments/{{tournamentId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "tournaments",
+                "{{tournamentId}}"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "🔧 Admin - System Config",
+      "item": [
+        {
+          "name": "Get All Configs",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/configs",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "configs"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Active Config",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/configs/active",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "configs",
+                "active"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Config Details",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/configs/{{configId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "configs",
+                "{{configId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create Config",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Production Config v2.1\",\n  \"description\": \"Updated production configuration\",\n  \"version\": \"2.1.0\",\n  \"isActive\": false,\n  \"settings\": {\n    \"gameDefaults\": {\n      \"timePerMove\": 30,\n      \"maxGameDuration\": 1800,\n      \"allowReconnect\": true\n    },\n    \"paymentGateway\": {\n      \"provider\": \"paytm\",\n      \"environment\": \"production\",\n      \"minimumAmount\": 10,\n      \"maximumAmount\": 50000\n    },\n    \"features\": {\n      \"tournaments\": true,\n      \"matchmaking\": true,\n      \"chatSystem\": true,\n      \"leaderboards\": true\n    }\n  }\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/admin/configs",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "configs"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Config",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"isActive\": true,\n  \"settings\": {\n    \"gameDefaults\": {\n      \"timePerMove\": 25\n    }\n  }\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/admin/configs/{{configId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "configs",
+                "{{configId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Config",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/configs/{{configId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "configs",
+                "{{configId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Admin Update Withdrawal UPI",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"userId\": \"{{userId}}\",\n  \"newUpiId\": \"admin-updated@paytm\",\n  \"adminReason\": \"User requested UPI update via support\",\n  \"approvedBy\": \"admin@ludogame.com\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/admin/admin/update-withdrawal-upi",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "admin",
+                "update-withdrawal-upi"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "🔧 Admin - Payment Management",
+      "item": [
+        {
+          "name": "Payment System Health Check",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin-payment/health",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin-payment",
+                "health"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get All Transactions",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin-payment/transactions?page=1&limit=50&status=all&type=all&startDate=2024-01-01&endDate=2024-12-31&userId={{userId}}&minAmount=0&maxAmount=100000",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin-payment",
+                "transactions"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "50"
+                },
+                {
+                  "key": "status",
+                  "value": "all"
+                },
+                {
+                  "key": "type",
+                  "value": "all"
+                },
+                {
+                  "key": "startDate",
+                  "value": "2024-01-01"
+                },
+                {
+                  "key": "endDate",
+                  "value": "2024-12-31"
+                },
+                {
+                  "key": "userId",
+                  "value": "{{userId}}"
+                },
+                {
+                  "key": "minAmount",
+                  "value": "0"
+                },
+                {
+                  "key": "maxAmount",
+                  "value": "100000"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Payment Statistics",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin-payment/stats?period=monthly&startDate=2024-01-01&endDate=2024-12-31&groupBy=status",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin-payment",
+                "stats"
+              ],
+              "query": [
+                {
+                  "key": "period",
+                  "value": "monthly"
+                },
+                {
+                  "key": "startDate",
+                  "value": "2024-01-01"
+                },
+                {
+                  "key": "endDate",
+                  "value": "2024-12-31"
+                },
+                {
+                  "key": "groupBy",
+                  "value": "status"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Transaction Details",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin-payment/transactions/{{transactionId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin-payment",
+                "transactions",
+                "{{transactionId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Approve Payment",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"remarks\": \"Payment verified and approved\",\n  \"approvedAmount\": 1000,\n  \"bonusAmount\": 50,\n  \"notifyUser\": true,\n  \"processingTime\": \"immediate\",\n  \"verificationMethod\": \"manual_review\",\n  \"adminNotes\": \"UTR verified with bank records\",\n  \"auditTrail\": {\n    \"approvedBy\": \"admin@ludogame.com\",\n    \"approvalTimestamp\": \"{{$timestamp}}\",\n    \"verificationSteps\": [\n      \"UTR_CHECK\",\n      \"AMOUNT_VERIFICATION\",\n      \"USER_VALIDATION\"\n    ]\n  }\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/admin-payment/transactions/{{transactionId}}/approve",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin-payment",
+                "transactions",
+                "{{transactionId}}",
+                "approve"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Reject Payment",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"reason\": \"Invalid UTR number\",\n  \"remarks\": \"UTR number could not be verified with bank records\",\n  \"notifyUser\": true,\n  \"allowResubmission\": true,\n  \"adminNotes\": \"User needs to provide correct UTR\",\n  \"auditTrail\": {\n    \"rejectedBy\": \"admin@ludogame.com\",\n    \"rejectionTimestamp\": \"{{$timestamp}}\",\n    \"rejectionCategory\": \"INVALID_PROOF\"\n  }\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/admin-payment/transactions/{{transactionId}}/reject",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin-payment",
+                "transactions",
+                "{{transactionId}}",
+                "reject"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Bulk Approve Payments",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"transactionIds\": [\n    \"txn_1\",\n    \"txn_2\",\n    \"txn_3\"\n  ],\n  \"remarks\": \"Bulk approval for verified transactions\",\n  \"notifyUsers\": true,\n  \"auditTrail\": {\n    \"approvedBy\": \"admin@ludogame.com\",\n    \"bulkApprovalReason\": \"End of day processing\"\n  }\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/admin-payment/transactions/bulk/approve",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin-payment",
+                "transactions",
+                "bulk",
+                "approve"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Payment Gateway Config",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin-payment/gateway/config",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin-payment",
+                "gateway",
+                "config"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Payment Gateway Config",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"paytm\": {\n    \"enabled\": true,\n    \"environment\": \"production\",\n    \"minimumAmount\": 10,\n    \"maximumAmount\": 50000,\n    \"processingFee\": 2.5\n  },\n  \"manual\": {\n    \"enabled\": true,\n    \"minimumAmount\": 100,\n    \"maximumAmount\": 100000,\n    \"autoApproval\": false,\n    \"requireScreenshot\": true\n  }\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/admin-payment/gateway/config",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin-payment",
+                "gateway",
+                "config"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Payment Method Configs",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin-payment/payment-methods",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin-payment",
+                "payment-methods"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Payment Method Status",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"enabled\": false,\n  \"reason\": \"Maintenance mode\",\n  \"estimatedDowntime\": \"2 hours\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/admin-payment/payment-methods/paytm/status",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin-payment",
+                "payment-methods",
+                "paytm",
+                "status"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Payment Method Schedule",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"schedule\": {\n    \"enabled\": true,\n    \"maintenanceWindows\": [\n      {\n        \"start\": \"02:00\",\n        \"end\": \"04:00\",\n        \"timezone\": \"Asia/Kolkata\",\n        \"days\": [\n          \"sunday\"\n        ]\n      }\n    ]\n  }\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/admin-payment/payment-methods/manual/schedule",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin-payment",
+                "payment-methods",
+                "manual",
+                "schedule"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Process Manual Payment (Admin)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"userId\": \"{{userId}}\",\n  \"amount\": 1000,\n  \"transactionId\": \"MANUAL_{{$timestamp}}\",\n  \"paymentProof\": \"base64_encoded_screenshot\",\n  \"utrNumber\": \"UTR123456789\",\n  \"adminRemarks\": \"Manual payment processed after verification\",\n  \"verificationNotes\": \"UTR verified with bank, amount matches\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/wallet/manual-payment/process",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "wallet",
+                "manual-payment",
+                "process"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "🔗 Webhook Management",
+      "item": [
+        {
+          "name": "Test Webhook Endpoint (GET)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/payment/webhook/paytm",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "payment",
+                "webhook",
+                "paytm"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Payment Webhook (Paytm)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"orderId\": \"ORDER_{{$timestamp}}\",\n  \"txnId\": \"TXN_{{$randomInt}}\",\n  \"amount\": \"1000.00\",\n  \"status\": \"SUCCESS\",\n  \"paymentMode\": \"WALLET\",\n  \"currency\": \"INR\",\n  \"gatewayName\": \"PAYTM\",\n  \"bankTxnId\": \"BANK_{{$randomInt}}\",\n  \"mid\": \"MERCHANT_ID\",\n  \"respCode\": \"01\",\n  \"respMsg\": \"Txn Success\",\n  \"txnDate\": \"{{$isoTimestamp}}\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/payment/webhook/paytm",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "payment",
+                "webhook",
+                "paytm"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Payment Webhook (Generic)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "X-Webhook-Signature",
+                "value": "sha256=webhook_signature_here"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"eventType\": \"payment.completed\",\n  \"orderId\": \"ORDER_{{$timestamp}}\",\n  \"transactionId\": \"TXN_{{$randomInt}}\",\n  \"amount\": 1000,\n  \"currency\": \"INR\",\n  \"status\": \"success\",\n  \"paymentMethod\": \"wallet\",\n  \"timestamp\": \"{{$isoTimestamp}}\",\n  \"metadata\": {\n    \"userId\": \"{{userId}}\",\n    \"gameId\": \"{{gameId}}\"\n  }\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/payment/webhook/generic",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "payment",
+                "webhook",
+                "generic"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
+}

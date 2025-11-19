@@ -1,0 +1,100 @@
+pipeline {
+    agent any
+
+    tools {
+        nodejs 'nodejs-20'  // must match your Jenkins configured NodeJS tool name
+    }
+
+    environment {
+        EC2_HOST = credentials('EC2_HOST')
+        JWT_SECRET = credentials('JWT_SECRET')
+        EC2_USER = 'ubuntu'
+    }
+
+    stages {
+        stage('Checkout') {
+            steps {
+                checkout scm
+            }
+        }
+
+        stage('Install Dependencies') {
+            steps {
+                timeout(time: 10, unit: 'MINUTES') {
+                    sh 'npm install --verbose'
+                }
+            }
+        }
+
+        stage('Build') {
+            steps {
+                sh 'npm run build || true'
+            }
+        }
+
+        stage('Database Migration Check') {
+            steps {
+                script {
+                    // Install dotenv-cli if not present
+                    sh 'npm install -g dotenv-cli'
+
+                    // Debug to verify .env.prod content
+                    sh 'echo "🧪 Loading .env.prod:"'
+                    sh 'cat .env.prod || echo "File not found"'
+
+                    // Run migration with env vars loaded from .env.prod
+                    sh 'dotenv -e .env.prod -- npm run migration:show'
+                }
+            }
+        }
+
+        stage('Deploy to EC2') {
+            steps {
+                script {
+                    withCredentials([
+                        sshUserPrivateKey(credentialsId: 'EC2_SSH_KEY', keyFileVariable: 'SSH_KEY_FILE', usernameVariable: 'ubuntu'),
+
+                    ]) {
+                        sh '''
+                            chmod 600 $SSH_KEY_FILE
+                            tar -czf ludoverse-deploy.tar.gz dist/ src/ package.json package-lock.json .env.prod
+
+                            scp -i $SSH_KEY_FILE -o StrictHostKeyChecking=no ludoverse-deploy.tar.gz ${EC2_USER}@${EC2_HOST}:/home/ubuntu/
+
+                            ssh -i $SSH_KEY_FILE -o StrictHostKeyChecking=no ${EC2_USER}@${EC2_HOST} '
+                                mkdir -p /home/ubuntu/ludoverse-app
+                                tar -xzf /home/ubuntu/ludoverse-deploy.tar.gz -C /home/ubuntu/ludoverse-app
+                                cd /home/ubuntu/ludoverse-app
+                                npm ci
+
+                                # Run migrations before starting the application
+                                echo "Running database migrations..."
+                                npm run migration:run
+
+                                if pm2 list | grep -q "ludoverse-app"; then
+                                    pm2 restart ludoverse-app
+                                else
+                                    pm2 start dist/server.js --name="ludoverse-app" --env production
+                                fi
+
+                                rm /home/ubuntu/ludoverse-deploy.tar.gz
+                            '
+                        '''
+                    }
+                }
+            }
+        }
+    }
+
+    post {
+        success {
+            echo '✅ Deployment completed successfully!'
+        }
+        failure {
+            echo '❌ Deployment failed!'
+        }
+        always {
+            cleanWs()
+        }
+    }
+}

@@ -1,0 +1,17 @@
+export enum PaymentMethod {
+  PAYTM = 'PAYTM',
+  UPI = 'UPI',
+  BANK_TRANSFER = 'BANK_TRANSFER',
+  WALLET = 'WALLET',
+  MANUAL = 'MANUAL',
+  SYSTEM = 'SYSTEM',
+}
+
+export enum TransactionStatus {
+  PENDING = 'PENDING',
+  COMPLETED = 'COMPLETED',
+  FAILED = 'FAILED',
+  CANCELLED = 'CANCELLED',
+  REFUNDED = 'REFUNDED',
+  EXPIRED = 'EXPIRED',
+}

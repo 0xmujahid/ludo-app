@@ -1,0 +1,36 @@
+pluginManagement { includeBuild("../node_modules/@react-native/gradle-plugin") }
+plugins { id("com.facebook.react.settings") }
+extensions.configure(com.facebook.react.ReactSettingsExtension){ ex -> ex.autolinkLibrariesFromCommand() }
+rootProject.name = 'ludo_vip'
+include ':app'
+includeBuild('../node_modules/@react-native/gradle-plugin')
+
+// Manually include common native modules that autolinking may register as project
+// dependencies but whose directories sometimes can't be discovered automatically.
+def manualModules = [
+	'@react-native-clipboard/clipboard',
+	'lottie-react-native',
+	'react-native-encrypted-storage',
+	'react-native-geolocation-service',
+	'react-native-gesture-handler',
+	'react-native-linear-gradient',
+	'react-native-mmkv',
+	'react-native-pager-view',
+	'react-native-permissions',
+	'react-native-reanimated',
+	'react-native-safe-area-context',
+	'react-native-screens',
+	'react-native-snackbar',
+	'react-native-sound-player',
+	'react-native-svg'
+]
+
+manualModules.each { mod ->
+	def modDir = file("../node_modules/${mod}/android")
+	if (modDir.exists()) {
+		// sanitize name for project path (replace '/' with '_' and remove '@')
+		def projName = mod.replaceAll('@','').replaceAll('/','_')
+		include ":${projName}"
+		project(":${projName}").projectDir = modDir
+	}
+}
